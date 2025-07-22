@@ -1,0 +1,6 @@
+@PromptLoader_HostAddress = http://localhost:5030
+
+GET {{PromptLoader_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
