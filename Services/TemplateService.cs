@@ -30,6 +30,6 @@ public class TemplateService
         }
 
         // If no file is found, return a message
-        return $"No template file found for title: {templateTitle}";
+        return $"No template found for \"{templateTitle}\"";
     }
 }
