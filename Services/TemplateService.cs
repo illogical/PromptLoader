@@ -1,17 +1,17 @@
 public class TemplateService
 {
     private readonly IConfiguration _configuration;
+    private string _templateDirectory = string.Empty;
 
     public TemplateService(IConfiguration configuration)
     {
         _configuration = configuration;
+        _templateDirectory = _configuration["TemplateDirectoryPath"];
     }
 
     public string GetTemplateFileContents(string templateTitle)
     {
-        // Get the directory path from IConfiguration
-        string directoryPath = _configuration["TemplateDirectoryPath"];
-        if (string.IsNullOrEmpty(directoryPath))
+        if (string.IsNullOrEmpty(_templateDirectory))
         {
             throw new InvalidOperationException("Template directory path is not configured.");
         }
@@ -22,7 +22,7 @@ public class TemplateService
         // Check if a file exists with the given templateTitle and any of the extensions
         foreach (var extension in fileExtensions)
         {
-            string filePath = Path.Combine(directoryPath, templateTitle + extension);
+            string filePath = Path.Combine(_templateDirectory, templateTitle + extension);
             if (File.Exists(filePath))
             {
                 return File.ReadAllText(filePath);
@@ -31,5 +31,19 @@ public class TemplateService
 
         // If no file is found, return a message
         return $"No template found for \"{templateTitle}\"";
+    }
+
+    public void AddTemplate(string templateTitle, string content)
+    {
+        if (string.IsNullOrEmpty(_templateDirectory))
+        {
+            throw new InvalidOperationException("Template directory path is not configured.");
+        }
+
+        // Define the file path
+        string filePath = Path.Combine(_templateDirectory, templateTitle + ".txt");
+
+        // Write the content to the file
+        File.WriteAllText(filePath, content);
     }
 }
